@@ -1,9 +1,5 @@
 pipeline {
-  agent { 
-     docker { 
-         image 'evarga:jenkins-slave' 
-     } 
-  }
+  agent any
   stages {
     stage('prepare') {
       steps {
@@ -12,20 +8,22 @@ pipeline {
     }
     stage('building docker image') {
       steps {
-        script {
-          docker.build registry + ":$BUILD_NUMBER"
+        container ('jenkins-slave-dind') {
+          script {
+            docker.build registry + ":$BUILD_NUMBER"
+          }
         }
-
       }
     }
     stage('push docker image to dockerhub') {
       steps {
-        script {
-          docker.withRegistry( '', registryCredential ) {
-            dockerImage.push()
+        container ('jenkins-slave-dind') {
+            script {
+              docker.withRegistry( '', registryCredential ) {
+              dockerImage.push()
+            }
           }
         }
-
       }
     }
   }
