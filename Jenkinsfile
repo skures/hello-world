@@ -1,5 +1,9 @@
 pipeline {
-  agent jenkins-slave-dind
+  agent { 
+     docker { 
+         image 'evarga:jenkins-slave' 
+     } 
+  }
   stages {
     stage('prepare') {
       steps {
