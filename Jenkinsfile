@@ -1,5 +1,5 @@
 pipeline {
-  agent any
+  agent { label 'jenkins-slave-pod' }
   stages {
     stage('prepare') {
       steps {
