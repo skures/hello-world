@@ -1,5 +1,5 @@
 pipeline {
-  agent { label 'jenkins-slave-pod' }
+  agent any
   stages {
     stage('prepare') {
       steps {
@@ -8,22 +8,21 @@ pipeline {
     }
     stage('building docker image') {
       steps {
-        container ('jenkins-slave-dind') {
+        
           script {
             docker.build registry + ":$BUILD_NUMBER"
           }
-        }
+        
       }
     }
     stage('push docker image to dockerhub') {
       steps {
-        container ('jenkins-slave-dind') {
             script {
               docker.withRegistry( '', registryCredential ) {
               dockerImage.push()
             }
           }
-        }
+       
       }
     }
   }
